@@ -642,10 +642,15 @@ class JsonListItemConverter(object):
             source = video_quality == '0'
             ask = video_quality == '1'
             bandwidth = video_quality == '2'
+            framerate = video_quality == '3'
             try:
                 bandwidth_value = int(kodi.get_setting('bandwidth'))
             except:
                 bandwidth_value = None
+            try:
+                framerate_value = int(kodi.get_setting('framerate'))
+            except:
+                framerate_value = None
             if quality or len(videos) == 1:
                 for video in videos:
                     if (quality and (quality.lower() in video['name'].lower())) or len(videos) == 1:
@@ -669,6 +674,36 @@ class JsonListItemConverter(object):
                     return videos[index]
                 except:
                     pass
+            elif framerate and framerate_value and not clip:
+                max_framerate = None
+                for video in videos:
+                    try:
+                        video['framerate'] = int(video['id'][video['id'].rfind('p')+1:])
+                        if max_framerate is None or max_framerate < video['framerate']:
+                            max_framerate = video['framerate']
+                    except:
+                        pass
+                best_video = None
+                best_video_bandwidth = None
+                for video in videos:
+                    if 'framerate' in video:
+                        if video['framerate'] > framerate_value:
+                            continue
+                    elif video['id'] == 'chunked':
+                        if max_framerate is not None and max_framerate > framerate_value:
+                            continue
+                    elif video['id'] != 'audio_only':
+                        continue
+                    try:
+                        video_bandwidth = int(video['bandwidth'])
+                    except:
+                        video_bandwidth = None
+                    if best_video is None or video_bandwidth > best_video_bandwidth:
+                        best_video = video
+                        best_video_bandwidth = video_bandwidth
+                if best_video:
+                    return best_video
+
             return self.select_video_for_quality(videos)
 
     @staticmethod

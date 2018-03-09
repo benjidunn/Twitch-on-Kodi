@@ -39,8 +39,9 @@
     <!-- General -->
     <category label="30076">
         <!-- Video Quality -->
-        <setting id="video_quality" type="enum" label="30040" lvalues="30102|30136|30201" default="0"/>
+        <setting id="video_quality" type="enum" label="30040" lvalues="30102|30136|30201|30254" default="0"/>
         <setting id="bandwidth" type="number" label="30201" default="2500000" enable="eq(-1,2)" visible="eq(-1,2)"/>
+        <setting id="framerate" type="select" label="30254" default="-" values="-|30|60" enable="eq(-2,3)" visible="eq(-2,3)"/>
         <setting id="video_support_ia_builtin" type="bool" label="" visible="false" enable="true" default="false"/>
         <setting id="video_support_ia_addon" type="bool" label="" visible="false" enable="true" default="false"/>
         <setting id="video_quality_ia" type="bool" label="30223" default="false" enable="eq(-1,true)|eq(-2,true)"/>
